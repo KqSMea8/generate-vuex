@@ -124,14 +124,24 @@ export const generateActions = (stateName, {
   }) => {
   const types = getMutationTypes(stateName)
   return {
-    [`${stateName}_start`]({ commit }, params) {
-      commit(types.START, params)
+    [`${stateName}_start`]({ commit, state }, params) {
+      // start 方法对 params 补充更新
+      commit(types.START, { ...state[stateName].params, ...params })
     },
-    async [`${stateName}_perform`]({ commit, getters }, params) {
-      commit(types.PERFORM, params)
-      await createPerformPromise(params)
+    async [`${stateName}_perform`]({ commit, state, getters }, params) {
+      const completeParams = { ...state[stateName].params, ...params }
+      // perform 方法对 params 补充更新
+      commit(types.PERFORM, completeParams)
+      await createPerformPromise(completeParams)
         .then((data) => {
           commit(types.DONE, data)
+          // todo 
+          // data: { "code": 301, "message": "parameters illegal" } 这种错误只能手动来 commit 了...
+          // if (data && data.code === 0) {
+          //   commit(types.DONE, data)
+          // } else {
+          //   commit(types.FAIL, data)
+          // }
         })
         .catch((err) => {
           commit(types.FAIL, err)
@@ -160,3 +170,11 @@ export const generateActions = (stateName, {
 // 3. ts 代码提示
 // 4. 单元测试
 // 5. 感觉 getter 太多了没有必要，声明式 过滤一部分
+// 6. 希望封装 axios 之后，能够和后台约定之后，resp 中的 code 和 data 字段是固定的， vuex 中的某一个 state 的 data 
+// 不要再记录 code 这些对渲染来说无意义的字段了。
+
+
+// FIXME:
+// 1. mutations 的名字跟 actions 的名字其实是重复的。。。可以么也可以。。。
+// 2. 貌似没办法处理 data: {"code":301,"message":"parameters illegal"} 这种错误。 这里如果写进 generate.js 中的话，貌似会对后台接口的返回有要求了。。。
+// 最好的方式可能是配置文件
