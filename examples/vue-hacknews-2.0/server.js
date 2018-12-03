@@ -16,7 +16,7 @@ const serverInfo =
 
 const app = express()
 
-function createRenderer (bundle, options) {
+function createRenderer(bundle, options) {
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return createBundleRenderer(bundle, Object.assign(options, {
     // for component caching
@@ -78,7 +78,7 @@ app.use('/service-worker.js', serve('./dist/service-worker.js'))
 // https://www.nginx.com/blog/benefits-of-microcaching-nginx/
 app.use(microcache.cacheSeconds(1, req => useMicroCache && req.originalUrl))
 
-function render (req, res) {
+function render(req, res) {
   const s = Date.now()
 
   res.setHeader("Content-Type", "text/html")
@@ -87,7 +87,7 @@ function render (req, res) {
   const handleError = err => {
     if (err.url) {
       res.redirect(err.url)
-    } else if(err.code === 404) {
+    } else if (err.code === 404) {
       res.status(404).send('404 | Page Not Found')
     } else {
       // Render Error Page or Redirect
@@ -116,7 +116,7 @@ app.get('*', isProd ? render : (req, res) => {
   readyPromise.then(() => render(req, res))
 })
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8088
 app.listen(port, () => {
   console.log(`server started at localhost:${port}`)
 })

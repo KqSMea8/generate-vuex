@@ -173,8 +173,18 @@ export const generateActions = (stateName, {
 // 6. 希望封装 axios 之后，能够和后台约定之后，resp 中的 code 和 data 字段是固定的， vuex 中的某一个 state 的 data 
 // 不要再记录 code 这些对渲染来说无意义的字段了。
 
+// 7. dispatch a. before_callback b. success_callback c. fail_callback
+
 
 // FIXME:
 // 1. mutations 的名字跟 actions 的名字其实是重复的。。。可以么也可以。。。
 // 2. 貌似没办法处理 data: {"code":301,"message":"parameters illegal"} 这种错误。 这里如果写进 generate.js 中的话，貌似会对后台接口的返回有要求了。。。
 // 最好的方式可能是配置文件
+
+
+// DOC:
+// 尽量推荐使用标准的返回体，resp 包含 code message 以及 data
+// code === 0 或者 200 取 data 赋值给 store 的 data
+// code !== 0 则取 message 赋值给 store 的 error
+
+// 如果项目是渐进式的，即接口前期不是规范的，后期是标准返回体的，提供一个配置文件
