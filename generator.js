@@ -188,3 +188,9 @@ export const generateActions = (stateName, {
 // code !== 0 则取 message 赋值给 store 的 error
 
 // 如果项目是渐进式的，即接口前期不是规范的，后期是标准返回体的，提供一个配置文件
+
+// generateGetters
+// generateGetters(STATENAME.xxx, 'data')
+// generateGetters(STATENAME.xxx, 'error')
+// generateGetters(STATENAME.xxx) 生成全部 data param error status 的 getters
+// generateGetters(STATENAME) 生成全部
